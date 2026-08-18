@@ -1,0 +1,30 @@
+name: Comment on released PRs
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  comment:
+    name: Comment on released PRs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment on released PRs
+        uses: rdlf0/comment-released-prs-action@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          # NOTE: not using custom comment body, rather using default only.
+          # comment-body: |-
+          #   🙌 This is some sample custom message. 🤣 It supports markdown and emojis! 🎈
+          #   You can show information about the release - [{{name}}]({{html_url}}) 💩
+          #   Or you can show off with a list:
+          #   - Which includes some nonsense
+          #   - Or other useless info
+          #   - And so on...
+
+          #   Info about the author of the release is also available:
+          #   ![{{author.login}}]({{author.avatar_url}})
+          add-label: true
+          # NOTE: not using custom label-pattern, rather using default only.
+          # label-pattern: "{{tag_name}} ✨"

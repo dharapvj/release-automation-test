@@ -1,0 +1,59 @@
+name-template: "v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
+
+# Automatically determine next version from PR labels
+version-resolver:
+  major:
+    labels:
+      - "breaking-change"
+  minor:
+    labels:
+      - "feature"
+      - "enhancement"
+  patch:
+    labels:
+      - "bug"
+      - "fix"
+      - "chore"
+      - "maintenance"
+      - "dependencies"
+      - "deps"
+      - "documentation"
+  default: patch
+
+categories:
+  - title: "⚠️ Breaking Changes"
+    labels:
+      - "breaking-change"
+  - title: "🚀 Features"
+    labels:
+      - "feature"
+      - "enhancement"
+  - title: "🐛 Bug Fixes"
+    labels:
+      - "bug"
+      - "fix"
+  - title: "🧹 Maintenance"
+    labels:
+      - "chore"
+      - "maintenance"
+  - title: "📦 Dependencies"
+    labels:
+      - "dependencies"
+      - "deps"
+  - title: "📝 Documentation"
+    labels:
+      - "documentation"
+
+change-template: "- $TITLE ([#$NUMBER]($URL)) @$AUTHOR"
+change-title-escapes: '\<*_&' # escape special chars in PR titles
+
+# PRs with no matching label land here rather than being silently dropped
+no-changes-template: "_No changes_"
+
+template: |
+  ## What's Changed
+
+  $CHANGES
+
+  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
