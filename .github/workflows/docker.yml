@@ -98,29 +98,36 @@ jobs:
           docker buildx imagetools create --tag "${TARGET_LOWER}" "${SOURCE_LOWER}"
 
 
-  # cleanup-old-images:
-  #   name: Cleanup Old Container Images
-  #   runs-on: ubuntu-latest
-  #   needs: build-and-push
-  #   if: github.event.repository.fork == false
-  #   permissions:
-  #     packages: write
+  cleanup-old-images:
+    name: Cleanup Old Container Images
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.event.repository.fork == false
+    permissions:
+      packages: write
 
-  #   steps:
-  #     # - name: Delete old untagged/branch images (keep last 10)
-  #     #   uses: actions/delete-package-versions@v5
-  #     #   with:
-  #     #     package-name: ${{ github.event.repository.name }}
-  #     #     package-type: container
-  #     #     min-versions-to-keep: 10
-  #     #     #ignore-versions: '^v\d((.\d)?.\d)?(-.+)?$' # keep all semver tags
-  #     #     # valid tags which will get retained..
-  #     #     # v1.1.1 / v1.1 / v2 / v2-hotfix
-  #     #     delete-only-pre-release-versions: "true"
-  #     - name: Delete old untagged/branch images (keep last 10)
-  #       uses: dataaxiom/ghcr-cleanup-action@v1
-  #       with:
-  #         # TODO: TEMP testing. Should remove it once we know it works
-  #         dry-run: true
-  #         keep-n-untagged: 10
-  #         delete-partial-images: true
+    steps:
+      # - name: Delete old untagged/branch images (keep last 10)
+      #   uses: actions/delete-package-versions@v5
+      #   with:
+      #     package-name: ${{ github.event.repository.name }}
+      #     package-type: container
+      #     min-versions-to-keep: 10
+      #     #ignore-versions: '^v\d((.\d)?.\d)?(-.+)?$' # keep all semver tags
+      #     # valid tags which will get retained..
+      #     # v1.1.1 / v1.1 / v2 / v2-hotfix
+      #     delete-only-pre-release-versions: "true"
+      - name: Log in to Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete old untagged/branch images (keep last 10)
+        uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          # TODO: TEMP testing. Should remove it once we know it works
+          dry-run: true
+          keep-n-untagged: 10
+          delete-partial-images: true
