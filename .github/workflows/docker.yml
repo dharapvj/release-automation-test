@@ -97,19 +97,6 @@ jobs:
           echo "Retagging ${SOURCE_LOWER} → ${TARGET_LOWER}"
           docker buildx imagetools create --tag "${TARGET_LOWER}" "${SOURCE_LOWER}"
 
-  trigger-deployment:
-    name: Trigger Deployment in multifony-docker
-    runs-on: ubuntu-latest
-    needs: retag-release
-    if: github.event_name == 'release' && github.event.repository.fork == false
-    steps:
-      - name: Dispatch deployment event to multifony-docker
-        uses: peter-evans/repository-dispatch@v4
-        with:
-          token: ${{ secrets.REPO_DISPATCH_TOKEN }}
-          repository: volyty/multifony-docker
-          event-type: volyty-be-released
-          client-payload: '{"image_tag": "${{ github.event.release.tag_name }}"}'
 
   # cleanup-old-images:
   #   name: Cleanup Old Container Images
